@@ -1,3 +1,4 @@
+library(here)
 source(here("COVIDinOregon.R"))
 
 ## Line Graph stuff
@@ -196,6 +197,81 @@ sevenday_new_cases +
             x = as.Date("2020-07-20"), y = 365, size = 3)
 
 ggsave(here("Images/OregonCovidAverage.png"), width = 16, height = 10, dpi = 300)
+
+## Second Version of Same Plot with All Counties
+
+sevenday_new_cases_all <- ggplot(case_tracking_df, aes(x = date)) +
+  geom_area(aes(y = ave_new_cases, fill = fct_reorder(abbr, ave_new_cases)),
+            color = "black") + #f7d6d1
+  scale_fill_manual(values = color_pal) +
+  labs(y = "New Cases", x = "Date", title = "7 Day Average of Covid-19 Cases in Oregon by County") +
+  scale_y_continuous(limits = c(0, NA), labels = scales::comma) +
+  scale_x_date(breaks = scales::breaks_pretty(n = 10), date_labels = "%b") +
+  hrbrthemes::theme_ipsum() +
+  theme(plot.title = element_text(hjust = 0.5, color = "#df5a48"),
+        axis.title = element_text(color = "#df5a48", face = "bold"),
+        axis.line.x = element_blank(),
+        axis.title.x = element_text(hjust = 0.5, size = 12, face = "bold"),
+        axis.title.y = element_text(hjust = 0.5, size = 12, face = "bold"),
+        axis.ticks.x = element_line(color = "#df5a48"),
+        axis.text.y = element_text(hjust = 0.75),
+        axis.ticks.length.x = unit(0.5, "cm"),
+        panel.grid.minor = element_blank(),
+        axis.line.y = element_line(arrow = grid::arrow(length = unit(0.3, "cm"), 
+                                                       ends = "both"), color = "#C4161B", size = 1.5),
+        legend.position = "none")
+
+cum_text_df_all <- case_tracking_df %>%
+  group_by(abbr) %>%
+  dplyr::slice(which.max(date)) %>% 
+  ungroup() %>%
+  arrange(desc(ave_new_cases)) %>%
+  dplyr::mutate(cum = cumsum(ave_new_cases)) %>%
+  dplyr::mutate(xdist = 8 - 0.1*str_length(abbr)*row_number()^0.75,
+                ydist = -85 + row_number()^1.5) # X distance position based on string length
+
+sevenday_new_cases_all +
+  geom_text(data = cum_text_df_all, 
+            aes(color = rev(factor(cum)), # Need to reverse color factor here for position stack
+                x = (as.Date(date) + xdist), 
+                y = cum, 
+                size = ave_new_cases,
+                label = paste0(abbr, "\nCounty\n(", round(ave_new_cases, 2), ")")),
+            fontface = "bold") +
+  scale_size(range = c(0, 2.5), guide = F) +
+  scale_color_manual(values = color_pal[(37-nrow(cum_text_df_all)):36]) +
+  annotate(geom="point", x=as.Date("2020-11-17"), y=1280, size=10, shape=21, fill="#f7d6d1", color = "transparent") +
+  geom_text(aes(label = "November 14"), color = "#df5a48", 
+            x = as.Date("2020-11-09"), y = 1335, size = 3, fontface = "bold") +
+  geom_text(aes(label = "Statewide Freeze"), color = "black", 
+            x = as.Date("2020-11-09"), y = 1300, size = 3) +
+  annotate(geom="point", x=as.Date("2020-12-02"), y=1550, size=10, shape=21, fill="#f7d6d1", color = "transparent") +
+  geom_text(aes(label = "December 2"), color = "#df5a48", 
+            x = as.Date("2020-12-09"), y = 1615, size = 3, fontface = "bold") +
+  geom_text(aes(label = "End of Freeze"), color = "black", 
+            x = as.Date("2020-12-09"), y = 1585, size = 3) +
+  annotate(geom="point", x=as.Date("2020-07-01"), y=260, size=10, shape=21, fill="#f7d6d1", color = "transparent") +
+  geom_text(aes(label = "July 1"), color = "#df5a48", 
+            x = as.Date("2020-06-22"), y = 315, size = 3, fontface = "bold") +
+  geom_text(aes(label = "Mask Mandate"), color = "black", 
+            x = as.Date("2020-06-22"), y = 280, size = 3) +
+  annotate(geom="point", x=as.Date("2020-03-23"), y=50, size=10, shape=21, fill="#f7d6d1", color = "transparent") +
+  geom_text(aes(label = "March 23"), color = "#df5a48", 
+            x = as.Date("2020-03-15"), y = 105, size = 3, fontface = "bold") +
+  geom_text(aes(label = "Stay-at-home Order"), color = "black", 
+            x = as.Date("2020-03-15"), y = 85, size = 3) +
+  annotate(geom="point", x=as.Date("2020-07-10"), y=330, size=10, shape=21, fill="#f7d6d1", color = "transparent") +
+  geom_text(aes(label = "July 6"), color = "#df5a48", 
+            x = as.Date("2020-07-20"), y = 385, size = 3, fontface = "bold") +
+  geom_text(aes(label = "Stay-at-home Lifted"), color = "black", 
+            x = as.Date("2020-07-20"), y = 365, size = 3)
+
+ggsave(here("Images/OregonCovidAverageAll.png"), width = 16, height = 10, dpi = 300)
+
+
+
+
+
 
 ## Percent of Oregon Cases Over Time
 

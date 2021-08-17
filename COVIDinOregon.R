@@ -133,7 +133,7 @@ p <- today_df %>%
     name = "Confirmed Cases Per Thousand Residents",
     palette = "DarkMint",
     breaks = scales::breaks_pretty(n = 8)) +
-  theme_owen()  +
+  theme_owen() +
   scale_color_identity() +
   theme(text=element_text(size=14,  family="Gill Sans MT"), 
         plot.title = element_text(hjust = 0.5, face = "bold",  vjust = 0, size = 15),
