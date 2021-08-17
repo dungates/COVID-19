@@ -30,5 +30,5 @@ Imports:
     tidyselect,
     zoo
 Remotes:
-    urbnmapr,
-    DGThemes
+    UrbanInstitute/urbnmapr,
+    dungates/DGThemes
