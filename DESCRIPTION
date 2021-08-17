@@ -14,3 +14,20 @@ Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1
+Imports: 
+    DGThemes,
+    dplyr,
+    ggplot2,
+    janitor,
+    jsonlite,
+    lubridate,
+    magrittr,
+    purrr,
+    sf,
+    stringr,
+    tibble,
+    tidycensus,
+    tidyr,
+    tidyselect,
+    urbnmapr,
+    zoo

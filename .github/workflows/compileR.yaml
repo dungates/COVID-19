@@ -33,21 +33,6 @@ jobs:
         run: |
           install.packages('remotes')
           install.packages('sessioninfo')
-          install.packages('ggplot2')
-          install.packages('zoo')
-          install.packages('httr')
-          install.packages('jsonlite')
-          install.packages('lubridate')
-          install.packages('paletteer')
-          install.packages('prismatic')
-          install.packages('here')
-          install.packages('readr')
-          install.packages('janitor')
-          install.packages('tidycensus')
-          install.packages('ggrepel')
-          install.packages('sf')
-          install.packages('urbnmapr')
-          install.packages('ggtext')
           saveRDS(remotes::dev_package_deps(dependencies = TRUE), ".github/depends.Rds", version = 2)
           writeLines(sprintf("R-%i.%i", getRversion()$major, getRversion()$minor), ".github/R-version")
         shell: Rscript {0}
@@ -66,7 +51,7 @@ jobs:
         
       - name: Generate data
         run: |
-          source("R/job.R")
+          source("R/covid_action_file.R")
         shell: Rscript {0} 
       
       - name: Commit files
